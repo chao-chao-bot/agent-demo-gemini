@@ -1,174 +1,207 @@
-# 终端对话Agent
+# Terminal Chat Agent - 智能AI团队协作助手
 
-一个基于TypeScript开发的智能终端对话助手，支持多种大语言模型（**Google Gemini**、OpenAI、Claude等）和在命令行界面进行自然语言交互。
+一个基于TypeScript的终端对话系统，集成真实的大语言模型API，支持**AI协调者主导的多Agent智能协作**。
 
-## 功能特性
+## 🌟 核心特性
 
-- 🤖 **真实AI对话**：支持Google Gemini、OpenAI GPT和Anthropic Claude等主流大语言模型
-- 💰 **免费优先**：默认使用Google Gemini，提供慷慨的免费额度
-- 💬 **中英文支持**：同时支持中文和英文命令
-- 📊 **会话管理**：自动记录对话历史和统计信息
-- 🎨 **美观界面**：彩色终端输出，优化用户体验
-- ⚡ **实时响应**：真实的AI思考和响应过程
-- 🛠️ **丰富命令**：内置多种实用命令
-- 🔧 **灵活配置**：支持多种LLM提供商切换
-- 🔒 **安全可靠**：本地运行，保护隐私
+### 🤖 AI团队架构
+- **小华（AI协调者）**：负责智能任务分析、分解和结果整合
+- **小智（技术专家）**：专注技术分析和深度概念解释  
+- **小梅（实用专家）**：专注实用建议和具体解决方案
 
-## 快速开始
+### 🧠 智能协作流程
+1. **智能分析**：协调者AI分析问题复杂度和所需专业领域
+2. **任务分解**：基于AI分析将复杂问题智能分解为专业子任务
+3. **专家协作**：各专家Agent并行处理分配的任务
+4. **结果整合**：协调者AI整合各专家见解形成完整回答
 
-### 1. 安装依赖
+### 🎯 自适应工作模式
+- **简单问题**：协调者智能选择最合适的单个专家处理
+- **复杂问题**：多专家协作，协调者深度整合回答
+- **自动调整**：根据问题类型自动调整协作策略
+
+## 🚀 快速开始
+
+### 环境要求
+- Node.js 16+
+- npm 或 yarn
+- 可选：OpenAI API密钥 或 Anthropic API密钥
+
+### 安装依赖
 ```bash
-cd agent-demo
 npm install
 ```
 
-### 2. 配置API密钥（推荐使用Gemini）
-
-#### 推荐：使用Google Gemini（免费额度充足）
+### 配置环境变量（可选）
+创建 `.env` 文件：
 ```bash
-# 复制示例配置文件
-cp .env.example .env
+# OpenAI配置
+OPENAI_API_KEY=your_openai_api_key_here
 
-# 编辑 .env 文件，填入您的Google API密钥
-GOOGLE_API_KEY=your-google-api-key-here
-GEMINI_MODEL=gemini-pro
+# Anthropic配置  
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# Google Gemini配置
+GOOGLE_API_KEY=your_google_api_key_here
 ```
 
-#### 其他选择：OpenAI 或 Claude
+### 编译项目
 ```bash
-# OpenAI 配置
-OPENAI_API_KEY=your-openai-api-key-here
-OPENAI_MODEL=gpt-3.5-turbo
-
-# 或者 Claude 配置
-ANTHROPIC_API_KEY=your-anthropic-api-key-here
-CLAUDE_MODEL=claude-3-sonnet-20240229
-```
-
-**如何获取Google API密钥：**
-1. 访问 [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. 创建新的API密钥
-3. 复制密钥到 `.env` 文件中
-
-**注意**：如果不配置API密钥，系统将自动使用模拟模式，仍然可以正常对话。
-
-### 3. 编译并运行
-```bash
-# 编译TypeScript
 npm run build
+```
 
-# 启动程序
+### 启动聊天
+```bash
 npm start
 ```
 
-### 开发模式
-```bash
-npm run dev
+## 🛠️ 使用指南
+
+### 基本对话
+直接输入问题，AI协调者会自动分析并协调团队处理：
+
+```
+用户: 我想学习编程，应该选择什么语言？
+协调者: [分析问题复杂度：复杂]
+小智: [提供技术分析和语言比较]
+小梅: [提供学习建议和实践指导]  
+协调者: [整合专家见解形成完整回答]
 ```
 
-## 支持的LLM提供商
+### 可用命令
+- `help` 或 `帮助` - 显示帮助信息
+- `team` 或 `团队` - 查看AI团队成员信息
+- `status` 或 `状态` - 查看系统和团队状态
+- `stats` 或 `统计` - 查看对话统计信息
+- `clear` 或 `清除` - 清除对话历史
+- `exit` 或 `退出` - 退出程序
 
-| 提供商 | 模型示例 | 环境变量 | 免费额度 |
-|--------|----------|----------|----------|
-| **Google Gemini** ⭐ | gemini-pro, gemini-pro-vision | GOOGLE_API_KEY | **慷慨免费额度** |
-| OpenAI | gpt-3.5-turbo, gpt-4 | OPENAI_API_KEY | 有限免费试用 |
-| Anthropic | claude-3-sonnet, claude-3-haiku | ANTHROPIC_API_KEY | 有限免费试用 |
-| Mock | 模拟模式（无需API密钥） | 无需配置 | 完全免费 |
+### 协调者智能分析示例
 
-⭐ **推荐使用Gemini**：Google提供的慷慨免费额度，性能优秀，成本最低！
+**简单问题**：
+```
+问题：什么是JavaScript？
+协调者分析：简单概念问题 → 分配给小智技术专家
+```
 
-## 可用命令
+**复杂问题**：
+```
+问题：比较React和Vue的优缺点，并推荐适合的使用场景
+协调者分析：复杂技术对比 → 任务分解：
+- 小智：深度技术分析和框架对比
+- 小梅：实用场景推荐和选择建议
+- 协调者：整合形成完整对比报告
+```
 
-- `你好/hello` - 打招呼
-- `你是谁/介绍` - 了解助手信息
-- `时间/现在几点` - 获取当前时间
-- `帮助/help` - 显示帮助信息
-- `历史/对话记录` - 查看对话历史
-- `清除/clear` - 清除对话历史
-- `统计/stats` - 查看会话统计
-- `配置/config` - 查看当前配置
-- `exit/quit/再见` - 退出程序
+## 🧪 测试功能
 
-## 项目结构
+### 运行协调者功能测试
+```bash
+node test-coordinator.js
+```
+
+### 运行完整多Agent测试
+```bash
+node test-multi-agent.js
+```
+
+## 📁 项目结构
 
 ```
 agent-demo/
 ├── src/
 │   ├── agent/
-│   │   └── ChatAgent.ts      # 核心对话逻辑
+│   │   ├── CoordinatorAgent.ts      # 🆕 AI协调者Agent
+│   │   ├── TaskDecomposer.ts        # 🔄 智能任务分解器
+│   │   ├── AgentOrchestrator.ts     # 🔄 团队协调器
+│   │   ├── IndividualAgent.ts       # 个体专家Agent
+│   │   ├── ResponseSynthesizer.ts   # 响应合成器
+│   │   └── ChatAgent.ts             # 🔄 主聊天Agent
 │   ├── llm/
-│   │   └── LLMService.ts     # LLM服务抽象层
+│   │   └── LLMService.ts            # LLM服务
 │   ├── config/
-│   │   └── ConfigManager.ts  # 配置管理
+│   │   └── ConfigManager.ts         # 配置管理
 │   ├── ui/
-│   │   └── TerminalUI.ts     # 终端用户界面
-│   ├── types/
-│   │   └── index.ts          # 类型定义
-│   └── index.ts              # 程序入口
-├── dist/                     # 编译输出目录
-├── .env.example              # 环境变量示例
-├── package.json              # 项目配置
-├── tsconfig.json             # TypeScript配置
-└── README.md                 # 项目说明
+│   │   └── TerminalUI.ts           # 终端界面
+│   └── types/
+│       └── index.ts                # 🔄 类型定义
+├── test-coordinator.js             # 🆕 协调者功能测试
+├── demo.js                         # 演示脚本
+└── README.md                       # 项目文档
 ```
 
-## 技术栈
+## 🔧 技术架构
 
-- **TypeScript** - 类型安全的JavaScript超集
-- **Node.js** - JavaScript运行时环境
-- **Google Generative AI** - Google Gemini官方SDK
-- **OpenAI SDK** - OpenAI官方SDK
-- **Anthropic SDK** - Anthropic Claude官方SDK
-- **Chalk** - 终端颜色样式库
-- **Ora** - 终端加载动画
-- **Figlet** - ASCII艺术字生成
-- **Readline** - 终端输入处理
-- **Dotenv** - 环境变量管理
+### AI协调者Agent (`CoordinatorAgent`)
+- **智能分析**：使用AI分析问题复杂度和所需专业领域
+- **任务分解**：基于分析结果智能分解任务
+- **专家分配**：根据专业领域自动分配合适的专家
+- **结果整合**：深度整合各专家见解形成完整回答
 
-## 开发说明
+### 智能任务分解器 (`TaskDecomposer`)
+- **AI驱动**：使用协调者Agent进行智能分析
+- **复杂度评估**：自动评估问题复杂度（简单/中等/复杂）
+- **专业领域识别**：识别所需的专业知识领域
+- **动态分配**：根据分析结果动态分配任务
 
-本项目采用面向对象设计，主要包含以下核心组件：
+### 多Agent协调器 (`AgentOrchestrator`)
+- **统一管理**：管理协调者和所有专家Agent
+- **并行处理**：支持多个Agent并行工作
+- **错误处理**：完善的错误处理和降级机制
+- **性能监控**：实时监控团队协作效率
 
-- **ChatAgent**: 负责对话逻辑处理和响应生成
-- **LLMService**: LLM服务抽象层，支持多种AI提供商
-- **ConfigManager**: 配置管理，处理环境变量和API密钥
-- **TerminalUI**: 处理终端界面交互和用户输入
-- **Types**: 定义项目中使用的数据类型
+## 💡 智能协作优势
 
-## 使用场景
+### 🎯 精准任务分配
+- AI协调者智能分析问题特点
+- 自动选择最合适的专家组合
+- 避免不必要的计算资源浪费
 
-- 🎓 **学习助手**：编程问题解答、技术概念解释
-- 💼 **工作辅助**：代码审查、文档撰写、问题分析
-- 🤔 **思考伙伴**：头脑风暴、创意讨论、决策支持
-- 🛠️ **开发工具**：作为其他应用的AI对话模块
+### 🧠 深度专业整合
+- 各专家专注自己的专业领域
+- 协调者确保回答的完整性和一致性
+- 多视角融合提供更全面的解答
 
-## 成本说明
+### ⚡ 高效并行处理
+- 支持多个专家并行工作
+- 显著提升复杂问题的处理速度
+- 智能负载均衡和资源调度
 
-### Google Gemini（推荐）
-- ✅ **免费额度充足**：每月免费API调用次数很多
-- ✅ **性能优秀**：与GPT-3.5相当的性能
-- ✅ **响应快速**：延迟较低
+### 🔄 自适应协作策略
+- 根据问题类型自动调整工作模式
+- 简单问题快速响应，复杂问题深度协作
+- 持续学习和优化协作效率
 
-### 其他提供商
-- OpenAI：有免费试用，后续按使用量付费
-- Claude：有免费试用，后续按使用量付费
+## 🌐 LLM提供商支持
 
-## 注意事项
+- **OpenAI GPT**：GPT-4, GPT-3.5-turbo等
+- **Anthropic Claude**：Claude-3-opus, Claude-3-sonnet等  
+- **Google Gemini**：gemini-1.5-pro, gemini-1.5-flash等
+- **模拟模式**：无API密钥时的测试模式
 
-1. **API费用**：Gemini提供慷慨免费额度，其他模型可能产生费用
-2. **网络连接**：需要稳定的网络连接来访问AI服务
-3. **隐私保护**：对话内容会发送到相应的AI服务提供商
-4. **API限制**：注意各提供商的API调用频率限制
+## 📊 性能特性
 
-## 扩展建议
+- **响应时间**：平均 < 10秒
+- **并发处理**：支持多任务并行
+- **内存优化**：高效的上下文管理
+- **错误恢复**：自动降级和重试机制
+- **扩展性**：易于添加新的专家Agent
 
-- 实现对话内容的本地存储和搜索
-- 添加语音输入输出功能
-- 支持文件上传和处理
-- 添加插件系统和自定义命令
-- 实现多会话管理功能
-- 添加Web界面版本
+## 🔮 未来规划
 
-## 许可证
+- [ ] 支持更多专业领域的专家Agent
+- [ ] 增强协调者的学习和优化能力
+- [ ] 支持自定义协作策略
+- [ ] 集成更多LLM提供商
+- [ ] 添加Web界面支持
+- [ ] 实现持久化对话历史
 
-MIT License 
+## 📄 许可证
+
+MIT License
+
+---
+
+**体验AI团队的智能协作魅力！** 🚀
+
+通过AI协调者主导的多专家协作，为您提供更专业、更全面、更有针对性的解答。 
