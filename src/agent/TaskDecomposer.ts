@@ -12,16 +12,26 @@ export class TaskDecomposer {
   /**
    * 分析用户问题并分解为子任务（使用AI协调者）
    */
-  public async decomposeTask(userQuery: string, conversationHistory: ChatMessage[] = []): Promise<TaskBreakdown> {
+  public async decomposeTask(
+    userQuery: string, 
+    conversationHistory: ChatMessage[] = [],
+    existingAnalysis?: CoordinationAnalysis
+  ): Promise<TaskBreakdown> {
     const taskId = uuidv4();
     
     try {
-      console.log(`🤔 协调者${this.coordinatorAgent.getName()}正在分析问题...`);
+      let analysis: CoordinationAnalysis;
       
-      // 使用协调者Agent进行智能分析
-      const analysis = await this.coordinatorAgent.analyzeAndCoordinate(userQuery, conversationHistory);
-      
-      console.log(`📋 ${this.coordinatorAgent.getName()}分析完成，复杂度：${analysis.complexity}`);
+      if (existingAnalysis) {
+        // 如果已有分析结果，直接使用
+        console.log(`📋 使用已有的协调分析结果，复杂度：${existingAnalysis.complexity}`);
+        analysis = existingAnalysis;
+      } else {
+        // 否则进行新的分析
+        console.log(`🤔 协调者${this.coordinatorAgent.getName()}正在分析问题...`);
+        analysis = await this.coordinatorAgent.analyzeAndCoordinate(userQuery, conversationHistory);
+        console.log(`📋 ${this.coordinatorAgent.getName()}分析完成，复杂度：${analysis.complexity}`);
+      }
       
       // 基于AI分析结果生成子任务
       const subtasks = this.generateSubtasksFromAnalysis(analysis);
