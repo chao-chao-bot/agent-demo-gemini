@@ -116,11 +116,10 @@ export class TerminalUI {
   }
 
   private showAgentInfo(): void {
-    const config = this.agent.getConfig();
-    console.log(chalk.yellow(`助手名称: ${config.name}`));
-    console.log(chalk.yellow(`版本: ${config.version}`));
-    console.log(chalk.yellow(`个性: ${config.personality}`));
-    console.log(chalk.yellow(`能力: ${config.capabilities.join(', ')}\n`));
+    console.log(chalk.yellow(`助手名称: 小智Plus`));
+    console.log(chalk.yellow(`版本: 2.0.0`));
+    console.log(chalk.yellow(`个性: 友善、耐心、乐于助人的RAG增强AI助手`));
+    console.log(chalk.yellow(`能力: 日常对话、问题解答、知识库检索、信息查询、学习交流、情感支持、RAG增强回答\n`));
   }
 
   private showUsageHints(): void {
@@ -139,7 +138,7 @@ export class TerminalUI {
     console.log(chalk.gray('🤔 正在思考...'));
 
     try {
-      const response = await this.agent.processMessage(input);
+      const response = await this.agent.chat(input);
       
       // 显示回复
       console.log(chalk.green('🤖 助手:'), response);

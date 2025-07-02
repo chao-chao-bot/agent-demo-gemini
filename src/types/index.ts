@@ -10,9 +10,9 @@ export interface AgentConfig {
   personality: string;
   capabilities: string[];
   llmProvider: LLMProvider;
-  model?: string;
-  maxTokens?: number;
-  temperature?: number;
+  model: string;
+  maxTokens: number;
+  temperature: number;
 }
 
 export interface ConversationContext {
@@ -39,4 +39,58 @@ export interface LLMResponse {
     completionTokens: number;
     totalTokens: number;
   };
+}
+
+// RAG相关类型定义
+export interface Document {
+  id: string;
+  content: string;
+  metadata: Record<string, any>;
+}
+
+export interface RAGStats {
+  documentCount: number;
+  isInitialized: boolean;
+  collectionName: string;
+}
+
+export interface ChromaConfig {
+  url?: string;
+  port?: number;
+  collectionName: string;
+}
+
+export interface RAGConfig {
+  chromaUrl?: string;
+  chromaPort?: number;
+  collectionName: string;
+  embeddingModel?: string;
+}
+
+export interface RAGDocument {
+  id: string;
+  content: string;
+  metadata: Record<string, any>;
+  embedding?: number[];
+}
+
+export interface LoadedDocument {
+  content: string;
+  metadata: Record<string, any>;
+}
+
+export interface EmbeddingResult {
+  embedding: number[];
+  text: string;
+}
+
+export interface SearchResult {
+  document: RAGDocument;
+  score: number;
+}
+
+export interface VectorStoreConfig {
+  collectionName: string;
+  chromaUrl?: string;
+  chromaPort?: number;
 } 

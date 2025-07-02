@@ -1,154 +1,316 @@
-# 终端对话Agent
+# 🤖 智能RAG增强Agent系统
 
-一个基于TypeScript开发的智能终端对话助手，支持Google Gemini大语言模型，可以在命令行界面进行自然语言交互。
+一个基于**LangChain.js + Chroma**的智能终端对话助手，集成RAG(检索增强生成)知识库，支持Google Gemini大语言模型。通过向量数据库实现智能文档检索，提供更准确、专业的回答。
 
-## 功能特性
+## ✨ 功能特性
 
-- 🤖 **真实AI对话**：基于Google Gemini强大的大语言模型
-- 💰 **完全免费**：Google Gemini提供慷慨的免费额度
-- 💬 **中英文支持**：同时支持中文和英文命令
-- 📊 **会话管理**：自动记录对话历史和统计信息
-- 🎨 **美观界面**：彩色终端输出，优化用户体验
-- ⚡ **实时响应**：真实的AI思考和响应过程
-- 🛠️ **丰富命令**：内置多种实用命令
-- 🔒 **安全可靠**：本地运行，保护隐私
+### 🔍 RAG知识库功能
+- **智能文档检索**：基于向量相似度的语义搜索
+- **自动知识增强**：根据用户问题自动检索相关知识
+- **多格式文档支持**：txt、md、json等格式
+- **智能文档分块**：自动优化文档分割策略
+- **实时知识更新**：支持动态添加新文档
 
-## 快速开始
+### 🤖 AI对话功能
+- **真实AI对话**：基于Google Gemini强大的大语言模型
+- **上下文记忆**：保持多轮对话的连续性
+- **中英文支持**：同时支持中文和英文命令
+- **会话管理**：自动记录对话历史和统计信息
+- **美观界面**：彩色终端输出，优化用户体验
 
-### 1. 安装依赖
+### 🛠️ 技术特性
+- **向量数据库**：集成Chroma向量数据库
+- **语义嵌入**：高质量文本向量化
+- **降级模式**：RAG失败时自动降级为基础对话
+- **模块化设计**：可扩展的插件架构
+
+## 🚀 快速开始
+
+### 1. 环境准备
+
 ```bash
+# 克隆项目
+git clone <repository-url>
 cd agent-demo
+
+# 安装依赖
 npm install
 ```
 
-### 2. 配置API密钥
+### 2. 环境变量配置
 
-#### 使用Google Gemini（推荐）
+创建 `.env` 文件：
+
 ```bash
-# 复制示例配置文件
-cp .env.example .env
+# AI模型配置
+GOOGLE_GEMINI_API_KEY=your_gemini_api_key_here
 
-# 编辑 .env 文件，填入您的Google API密钥
-GOOGLE_API_KEY=your-google-api-key-here
-GEMINI_MODEL=gemini-1.5-flash-latest
+# Chroma向量数据库配置 (可选)
+CHROMA_URL=localhost
+CHROMA_PORT=8000
+
+# RAG配置
+RAG_ENABLED=true
+RAG_COLLECTION_NAME=agent_knowledge_base
 ```
 
-**如何获取Google API密钥：**
-1. 访问 [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. 创建新的API密钥
-3. 复制密钥到 `.env` 文件中
+### 3. 启动Chroma数据库（可选）
 
-**注意**：如果不配置API密钥，系统将自动使用模拟模式，仍然可以正常对话。
-
-### 3. 编译并运行
+#### 方式一：Docker（推荐）
 ```bash
-# 编译TypeScript
+docker run -p 8000:8000 chromadb/chroma
+```
+
+#### 方式二：Python安装
+```bash
+pip install chromadb
+chroma run --host localhost --port 8000
+```
+
+#### 方式三：自动设置脚本
+```bash
+npm run setup-chroma
+```
+
+### 4. 构建并运行
+
+```bash
+# 编译项目
 npm run build
 
-# 启动程序
+# 启动Agent
 npm start
 ```
 
-### 开发模式
+## 📚 使用指南
+
+### 基本对话
+
+```
+用户: 什么是RAG技术？
+小智Plus: 🔍 已从知识库检索到相关信息
+
+基于知识库检索到的信息，RAG（Retrieval-Augmented Generation）是一种结合了信息检索和文本生成的AI技术...
+```
+
+### 特殊命令
+
+| 命令 | 功能 | 示例 |
+|------|------|------|
+| `帮助` / `help` | 查看所有可用命令 | `help` |
+| `知识库` / `rag` | 查看RAG系统状态 | `知识库` |
+| `添加文档` | 了解文档管理功能 | `添加文档` |
+| `历史` / `对话记录` | 查看对话历史 | `历史` |
+| `统计` / `stats` | 查看会话统计 | `stats` |
+| `配置` / `config` | 查看当前配置 | `config` |
+| `清除` / `clear` | 清除对话历史 | `clear` |
+
+### 知识库管理
+
+#### 添加文档到知识库（编程方式）
+
+```javascript
+// 添加单个文件
+await agent.addDocumentFromFile('/path/to/document.txt');
+
+// 添加整个目录
+await agent.addDocumentFromDirectory('/path/to/docs/');
+
+// 直接添加文本
+await agent.addDocumentFromText('文档内容...', {
+  title: '文档标题',
+  category: '分类'
+});
+```
+
+## 🏗️ 系统架构
+
+```
+智能RAG增强Agent系统
+├── 🧠 Agent核心层
+│   ├── ChatAgent.ts          # 对话管理
+│   └── 特殊命令处理
+├── 🤖 LLM服务层  
+│   ├── LLMService.ts         # 模型抽象
+│   └── Gemini集成
+├── 📚 RAG知识库层
+│   ├── RAGService.ts         # RAG服务
+│   ├── DocumentLoader.ts     # 文档加载
+│   └── ChromaVectorStore.ts  # 向量存储
+├── 🗄️ 向量数据库
+│   └── Chroma数据库
+└── 🖥️ 用户界面层
+    └── TerminalUI.ts         # 终端界面
+```
+
+## 🔧 技术栈
+
+### 核心框架
+- **[LangChain.js](https://github.com/langchain-ai/langchainjs)** - AI应用开发框架
+- **[Chroma](https://www.trychroma.com/)** - 向量数据库
+- **TypeScript** - 类型安全开发
+- **Node.js** - 运行时环境
+
+### AI服务
+- **Google Gemini** - 大语言模型
+- **Google Generative AI SDK** - 官方SDK
+
+### 支持库
+- **Chalk** - 终端颜色
+- **Figlet** - ASCII艺术字
+- **Dotenv** - 环境变量
+- **UUID** - 唯一标识符生成
+
+## 🎯 应用场景
+
+### 📖 知识问答
+- **技术文档查询**：快速检索技术文档内容
+- **产品手册问答**：基于产品手册的智能客服
+- **学术研究助手**：科研文献检索和分析
+
+### 💼 企业应用
+- **内部知识库**：员工培训和知识管理
+- **客户支持**：基于知识库的智能客服
+- **文档助手**：政策、流程、规范查询
+
+### 🎓 教育培训
+- **学习助手**：个性化学习内容推荐
+- **答疑系统**：基于教材的智能答疑
+- **研究工具**：学术资料检索和整理
+
+## ⚙️ 配置选项
+
+### RAG配置
+
+```javascript
+const ragConfig = {
+  chromaUrl: 'localhost',      // Chroma数据库地址
+  chromaPort: 8000,            // Chroma端口
+  collectionName: 'kb',        // 集合名称
+  chunkSize: 1000,             // 文档分块大小
+  chunkOverlap: 200,           // 分块重叠度
+  retrievalCount: 3,           // 检索文档数量
+  embeddingModel: 'default'    // 嵌入模型
+};
+```
+
+### Agent配置
+
+```javascript
+const agentConfig = {
+  name: '小智Plus',
+  version: '2.0.0',
+  llmProvider: 'gemini',
+  model: 'gemini-1.5-flash-latest',
+  maxTokens: 2000,
+  temperature: 0.7
+};
+```
+
+## 🔍 故障排除
+
+### 常见问题
+
+1. **RAG初始化失败**
+   ```bash
+   # 检查Chroma服务
+   curl http://localhost:8000/api/v1/heartbeat
+   
+   # 重启Chroma
+   docker restart chroma-db
+   ```
+
+2. **依赖安装问题**
+   ```bash
+   # 清理并重装
+   rm -rf node_modules package-lock.json
+   npm install
+   ```
+
+3. **API调用失败**
+   ```bash
+   # 检查环境变量
+   echo $GOOGLE_GEMINI_API_KEY
+   
+   # 测试网络连接
+   curl -I https://generativelanguage.googleapis.com
+   ```
+
+### 调试模式
+
 ```bash
-npm run dev
+# 启用详细日志
+DEBUG=true npm start
+
+# 检查Chroma状态
+npm run setup-chroma -- --check
 ```
 
-## 支持的LLM提供商
+## 📈 性能优化
 
-| 提供商 | 模型示例 | 环境变量 | 免费额度 |
-|--------|----------|----------|----------|
-| **Google Gemini** ⭐ | gemini-1.5-flash-latest, gemini-pro | GOOGLE_API_KEY | **慷慨免费额度** |
-| Mock | 模拟模式（无需API密钥） | 无需配置 | 完全免费 |
+### 文档优化
+- **合理分块**：控制文档块大小在500-1500字符
+- **质量过滤**：移除低质量或重复内容
+- **格式规范**：统一文档格式和结构
 
-⭐ **推荐使用Gemini**：Google提供的慷慨免费额度，性能优秀，完全免费！
+### 检索优化
+- **相似度阈值**：调整检索结果过滤阈值
+- **检索数量**：平衡检索数量和响应速度
+- **缓存策略**：缓存常用查询结果
 
-## 可用命令
+### 系统优化
+- **向量维度**：选择合适的embedding维度
+- **数据库索引**：优化Chroma索引配置
+- **内存管理**：控制向量数据内存使用
 
-- `你好/hello` - 打招呼
-- `你是谁/介绍` - 了解助手信息
-- `时间/现在几点` - 获取当前时间
-- `帮助/help` - 显示帮助信息
-- `历史/对话记录` - 查看对话历史
-- `清除/clear` - 清除对话历史
-- `统计/stats` - 查看会话统计
-- `配置/config` - 查看当前配置
-- `exit/quit/再见` - 退出程序
+## 🔮 发展规划
 
-## 项目结构
+### v2.1 计划
+- [ ] Web界面支持
+- [ ] 批量文档上传功能
+- [ ] 更多文档格式支持（PDF、DOCX）
+- [ ] 多语言embedding支持
 
-```
-agent-demo/
-├── src/
-│   ├── agent/
-│   │   └── ChatAgent.ts      # 核心对话逻辑
-│   ├── llm/
-│   │   └── LLMService.ts     # LLM服务抽象层
-│   ├── config/
-│   │   └── ConfigManager.ts  # 配置管理
-│   ├── ui/
-│   │   └── TerminalUI.ts     # 终端用户界面
-│   ├── types/
-│   │   └── index.ts          # 类型定义
-│   └── index.ts              # 程序入口
-├── dist/                     # 编译输出目录
-├── .env.example              # 环境变量示例
-├── package.json              # 项目配置
-├── tsconfig.json             # TypeScript配置
-└── README.md                 # 项目说明
-```
+### v2.2 计划
+- [ ] 插件系统
+- [ ] 自定义embedding模型
+- [ ] 分布式向量存储
+- [ ] 实时学习功能
 
-## 技术栈
+### v3.0 愿景
+- [ ] 多模态RAG（图像、音频）
+- [ ] 云端部署方案
+- [ ] 企业级权限管理
+- [ ] API服务化
 
-- **TypeScript** - 类型安全的JavaScript超集
-- **Node.js** - JavaScript运行时环境
-- **Google Generative AI** - Google Gemini官方SDK
-- **Chalk** - 终端颜色样式库
-- **Figlet** - ASCII艺术字生成
-- **Readline** - 终端输入处理
-- **Dotenv** - 环境变量管理
+## 🤝 贡献指南
 
-## 开发说明
+欢迎提交Issue和Pull Request！
 
-本项目采用面向对象设计，主要包含以下核心组件：
+### 开发流程
+1. Fork项目
+2. 创建功能分支
+3. 编写测试
+4. 提交代码
+5. 创建Pull Request
 
-- **ChatAgent**: 负责对话逻辑处理和响应生成
-- **LLMService**: LLM服务抽象层，支持Gemini AI
-- **ConfigManager**: 配置管理，处理环境变量和API密钥
-- **TerminalUI**: 处理终端界面交互和用户输入
-- **Types**: 定义项目中使用的数据类型
+### 代码规范
+- 使用TypeScript严格模式
+- 遵循ESLint规则
+- 添加适当的注释
+- 编写单元测试
 
-## 使用场景
+## 📄 许可证
 
-- 🎓 **学习助手**：编程问题解答、技术概念解释
-- 💼 **工作辅助**：代码审查、文档撰写、问题分析
-- 🤔 **思考伙伴**：头脑风暴、创意讨论、决策支持
-- 🛠️ **开发工具**：作为其他应用的AI对话模块
+MIT License - 详见 [LICENSE](LICENSE) 文件
 
-## 成本说明
+## 🔗 相关链接
 
-### Google Gemini（推荐）
-- ✅ **免费额度充足**：每月免费API调用次数很多
-- ✅ **性能优秀**：先进的多模态AI能力
-- ✅ **响应快速**：延迟较低
-- ✅ **完全免费**：对于大多数使用场景都是免费的
+- [LangChain.js 文档](https://js.langchain.com/)
+- [Chroma 文档](https://docs.trychroma.com/)
+- [Google AI Studio](https://makersuite.google.com/)
+- [项目详细设置指南](docs/SETUP.md)
 
-## 注意事项
+---
 
-1. **API费用**：Gemini提供慷慨免费额度，适合个人和小型项目使用
-2. **网络连接**：需要稳定的网络连接来访问AI服务
-3. **隐私保护**：对话内容会发送到Google AI服务
-4. **API限制**：注意Google API的调用频率限制
-
-## 扩展建议
-
-- 实现对话内容的本地存储和搜索
-- 添加语音输入输出功能
-- 支持文件上传和处理
-- 添加插件系统和自定义命令
-- 实现多会话管理功能
-- 添加Web界面版本
-
-## 许可证
-
-MIT License 
+⭐ 如果这个项目对你有帮助，请给我们一个star！ 

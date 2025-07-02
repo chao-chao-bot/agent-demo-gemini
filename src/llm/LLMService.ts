@@ -112,16 +112,38 @@ export class LLMService {
     await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200));
 
     const lastMessage = messages[messages.length - 1];
-    const input = lastMessage?.content.toLowerCase().trim() || '';
+    const input = lastMessage?.content || '';
+    const lowerInput = input.toLowerCase().trim();
+
+    // 检查是否包含RAG上下文
+    if (input.includes('基于以下知识库信息回答用户问题：')) {
+      // 使用更精确的解析方式
+      const ragPattern = /基于以下知识库信息回答用户问题：\s*([\s\S]*?)\s*用户问题：([^]*?)(?:\s*请基于上述知识库信息进行回答|$)/;
+      const match = input.match(ragPattern);
+      
+      if (match && match[1] && match[2]) {
+        const contextPart = match[1].trim();
+        const userQuestion = match[2].trim();
+        
+        // 从上下文中提取知识内容
+        const knowledgeMatch = contextPart.match(/【来源：[^】]*】\s*([\s\S]*?)(?:\s*$)/);
+        if (knowledgeMatch && knowledgeMatch[1]) {
+          const knowledgeContent = knowledgeMatch[1].trim();
+          
+          // 根据知识库内容回答问题
+          return this.generateResponseFromKnowledge(userQuestion, knowledgeContent);
+        }
+      }
+    }
 
     // 基础对话逻辑（保持原有的模拟逻辑）
     let content = '';
 
-    if (input.includes('你好') || input.includes('hello') || input.includes('hi')) {
+    if (lowerInput.includes('你好') || lowerInput.includes('hello') || lowerInput.includes('hi')) {
       content = '你好！我是一个智能AI助手，很高兴与您对话。我可以帮助您解答问题、进行讨论或提供信息。有什么我可以帮助您的吗？';
-    } else if (input.includes('你是谁') || input.includes('介绍') || input.includes('about')) {
+    } else if (lowerInput.includes('你是谁') || lowerInput.includes('介绍') || lowerInput.includes('about')) {
       content = '我是一个基于大语言模型的AI助手，具备自然语言理解和生成能力。我可以帮助您回答问题、进行对话、提供建议等。我会尽力为您提供准确、有用的信息。';
-    } else if (input.includes('时间') || input.includes('现在几点')) {
+    } else if (lowerInput.includes('时间') || lowerInput.includes('现在几点')) {
       const now = new Date();
       content = `当前时间是：${now.toLocaleString('zh-CN', { 
         year: 'numeric', 
@@ -147,9 +169,49 @@ export class LLMService {
     return {
       content,
       usage: {
-        promptTokens: Math.floor(input.length / 4), // 大概估算
+        promptTokens: Math.floor(lowerInput.length / 4), // 大概估算
         completionTokens: Math.floor(content.length / 4),
-        totalTokens: Math.floor((input.length + content.length) / 4)
+        totalTokens: Math.floor((lowerInput.length + content.length) / 4)
+      }
+    };
+  }
+
+  private generateResponseFromKnowledge(question: string, knowledge: string): LLMResponse {
+    const lowerQuestion = question.toLowerCase().trim();
+    const lowerKnowledge = knowledge.toLowerCase();
+    
+    let content = '';
+    
+    // 根据问题和知识内容生成回答
+    if (lowerQuestion.includes('小明') && lowerQuestion.includes('女朋友')) {
+      if (lowerKnowledge.includes('女朋友') && lowerKnowledge.includes('富二代')) {
+        content = '根据知识库信息，是的，小明有女朋友。他的女朋友是一个富二代，很漂亮且家境富裕。';
+      } else {
+        content = '根据现有信息无法确定小明是否有女朋友。';
+      }
+    } else if (lowerQuestion.includes('小明') && (lowerQuestion.includes('多大') || lowerQuestion.includes('年龄') || lowerQuestion.includes('岁'))) {
+      if (lowerKnowledge.includes('20岁')) {
+        content = '根据知识库信息，小明今年20岁。';
+      } else {
+        content = '根据现有信息无法确定小明的年龄。';
+      }
+    } else if (lowerQuestion.includes('小明') && (lowerQuestion.includes('专业') || lowerQuestion.includes('学') || lowerQuestion.includes('工程'))) {
+      if (lowerKnowledge.includes('土木工程')) {
+        content = '根据知识库信息，小明学的是土木工程专业，目前还没有毕业。';
+      } else {
+        content = '根据现有信息无法确定小明的专业。';
+      }
+    } else {
+      // 通用回答
+      content = `根据知识库信息：${knowledge.slice(0, 200)}${knowledge.length > 200 ? '...' : ''}`;
+    }
+    
+    return {
+      content,
+      usage: {
+        promptTokens: Math.floor((question.length + knowledge.length) / 4),
+        completionTokens: Math.floor(content.length / 4),
+        totalTokens: Math.floor((question.length + knowledge.length + content.length) / 4)
       }
     };
   }
