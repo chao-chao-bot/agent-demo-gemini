@@ -1,13 +1,9 @@
 import { LLMConfig, LLMResponse, ChatMessage } from '../types/index';
-import OpenAI from 'openai';
-import Anthropic from '@anthropic-ai/sdk';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import chalk from 'chalk';
 
 export class LLMService {
   private config: LLMConfig;
-  private openaiClient?: OpenAI;
-  private anthropicClient?: Anthropic;
   private geminiClient?: GoogleGenerativeAI;
 
   constructor(config: LLMConfig) {
@@ -17,25 +13,6 @@ export class LLMService {
 
   private initializeClient(): void {
     switch (this.config.provider) {
-      case 'openai':
-        if (!this.config.apiKey) {
-          throw new Error('OpenAI API密钥未设置。请设置OPENAI_API_KEY环境变量。');
-        }
-        this.openaiClient = new OpenAI({
-          apiKey: this.config.apiKey,
-          baseURL: this.config.baseURL
-        });
-        break;
-      
-      case 'claude':
-        if (!this.config.apiKey) {
-          throw new Error('Anthropic API密钥未设置。请设置ANTHROPIC_API_KEY环境变量。');
-        }
-        this.anthropicClient = new Anthropic({
-          apiKey: this.config.apiKey
-        });
-        break;
-      
       case 'gemini':
         if (!this.config.apiKey) {
           throw new Error('Google API密钥未设置。请设置GOOGLE_API_KEY环境变量。');
@@ -55,12 +32,6 @@ export class LLMService {
   public async generateResponse(messages: ChatMessage[], systemPrompt?: string): Promise<LLMResponse> {
     try {
       switch (this.config.provider) {
-        case 'openai':
-          return await this.generateOpenAIResponse(messages, systemPrompt);
-        
-        case 'claude':
-          return await this.generateClaudeResponse(messages, systemPrompt);
-        
         case 'gemini':
           return await this.generateGeminiResponse(messages, systemPrompt);
         
@@ -74,85 +45,6 @@ export class LLMService {
       console.error(chalk.red('LLM调用失败:'), error);
       throw error;
     }
-  }
-
-  private async generateOpenAIResponse(messages: ChatMessage[], systemPrompt?: string): Promise<LLMResponse> {
-    if (!this.openaiClient) {
-      throw new Error('OpenAI客户端未初始化');
-    }
-
-    const openaiMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [];
-    
-    // 添加系统提示
-    if (systemPrompt) {
-      openaiMessages.push({
-        role: 'system',
-        content: systemPrompt
-      });
-    }
-
-    // 转换消息格式
-    messages.forEach(msg => {
-      openaiMessages.push({
-        role: msg.role as 'user' | 'assistant' | 'system',
-        content: msg.content
-      });
-    });
-
-    const response = await this.openaiClient.chat.completions.create({
-      model: this.config.model,
-      messages: openaiMessages,
-      max_tokens: this.config.maxTokens,
-      temperature: this.config.temperature
-    });
-
-    const content = response.choices[0]?.message?.content || '抱歉，我无法生成回复。';
-    
-    return {
-      content,
-      usage: {
-        promptTokens: response.usage?.prompt_tokens || 0,
-        completionTokens: response.usage?.completion_tokens || 0,
-        totalTokens: response.usage?.total_tokens || 0
-      }
-    };
-  }
-
-  private async generateClaudeResponse(messages: ChatMessage[], systemPrompt?: string): Promise<LLMResponse> {
-    if (!this.anthropicClient) {
-      throw new Error('Anthropic客户端未初始化');
-    }
-
-    // Claude API 需要特殊的消息格式处理
-    const claudeMessages: any[] = [];
-    
-    messages.forEach(msg => {
-      if (msg.role !== 'system') {
-        claudeMessages.push({
-          role: msg.role,
-          content: msg.content
-        });
-      }
-    });
-
-    const response = await this.anthropicClient.messages.create({
-      model: this.config.model,
-      max_tokens: this.config.maxTokens,
-      temperature: this.config.temperature,
-      system: systemPrompt || undefined,
-      messages: claudeMessages
-    });
-
-    const content = response.content[0]?.type === 'text' ? response.content[0].text : '抱歉，我无法生成回复。';
-    
-    return {
-      content,
-      usage: {
-        promptTokens: response.usage.input_tokens || 0,
-        completionTokens: response.usage.output_tokens || 0,
-        totalTokens: (response.usage.input_tokens || 0) + (response.usage.output_tokens || 0)
-      }
-    };
   }
 
   private async generateGeminiResponse(messages: ChatMessage[], systemPrompt?: string): Promise<LLMResponse> {
@@ -194,6 +86,8 @@ export class LLMService {
     // 添加当前用户消息
     prompt += `用户: ${lastUserMessage.content}\n`;
     prompt += '助手: ';
+
+    console.log(chalk.green('🤖 prompt------:'), prompt);
 
     const result = await model.generateContent(prompt);
     const response = await result.response;

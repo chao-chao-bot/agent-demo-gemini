@@ -1,17 +1,16 @@
 # 终端对话Agent
 
-一个基于TypeScript开发的智能终端对话助手，支持多种大语言模型（**Google Gemini**、OpenAI、Claude等）和在命令行界面进行自然语言交互。
+一个基于TypeScript开发的智能终端对话助手，支持Google Gemini大语言模型，可以在命令行界面进行自然语言交互。
 
 ## 功能特性
 
-- 🤖 **真实AI对话**：支持Google Gemini、OpenAI GPT和Anthropic Claude等主流大语言模型
-- 💰 **免费优先**：默认使用Google Gemini，提供慷慨的免费额度
+- 🤖 **真实AI对话**：基于Google Gemini强大的大语言模型
+- 💰 **完全免费**：Google Gemini提供慷慨的免费额度
 - 💬 **中英文支持**：同时支持中文和英文命令
 - 📊 **会话管理**：自动记录对话历史和统计信息
 - 🎨 **美观界面**：彩色终端输出，优化用户体验
 - ⚡ **实时响应**：真实的AI思考和响应过程
 - 🛠️ **丰富命令**：内置多种实用命令
-- 🔧 **灵活配置**：支持多种LLM提供商切换
 - 🔒 **安全可靠**：本地运行，保护隐私
 
 ## 快速开始
@@ -22,27 +21,16 @@ cd agent-demo
 npm install
 ```
 
-### 2. 配置API密钥（推荐使用Gemini）
+### 2. 配置API密钥
 
-#### 推荐：使用Google Gemini（免费额度充足）
+#### 使用Google Gemini（推荐）
 ```bash
 # 复制示例配置文件
 cp .env.example .env
 
 # 编辑 .env 文件，填入您的Google API密钥
 GOOGLE_API_KEY=your-google-api-key-here
-GEMINI_MODEL=gemini-pro
-```
-
-#### 其他选择：OpenAI 或 Claude
-```bash
-# OpenAI 配置
-OPENAI_API_KEY=your-openai-api-key-here
-OPENAI_MODEL=gpt-3.5-turbo
-
-# 或者 Claude 配置
-ANTHROPIC_API_KEY=your-anthropic-api-key-here
-CLAUDE_MODEL=claude-3-sonnet-20240229
+GEMINI_MODEL=gemini-1.5-flash-latest
 ```
 
 **如何获取Google API密钥：**
@@ -70,12 +58,10 @@ npm run dev
 
 | 提供商 | 模型示例 | 环境变量 | 免费额度 |
 |--------|----------|----------|----------|
-| **Google Gemini** ⭐ | gemini-pro, gemini-pro-vision | GOOGLE_API_KEY | **慷慨免费额度** |
-| OpenAI | gpt-3.5-turbo, gpt-4 | OPENAI_API_KEY | 有限免费试用 |
-| Anthropic | claude-3-sonnet, claude-3-haiku | ANTHROPIC_API_KEY | 有限免费试用 |
+| **Google Gemini** ⭐ | gemini-1.5-flash-latest, gemini-pro | GOOGLE_API_KEY | **慷慨免费额度** |
 | Mock | 模拟模式（无需API密钥） | 无需配置 | 完全免费 |
 
-⭐ **推荐使用Gemini**：Google提供的慷慨免费额度，性能优秀，成本最低！
+⭐ **推荐使用Gemini**：Google提供的慷慨免费额度，性能优秀，完全免费！
 
 ## 可用命令
 
@@ -117,10 +103,7 @@ agent-demo/
 - **TypeScript** - 类型安全的JavaScript超集
 - **Node.js** - JavaScript运行时环境
 - **Google Generative AI** - Google Gemini官方SDK
-- **OpenAI SDK** - OpenAI官方SDK
-- **Anthropic SDK** - Anthropic Claude官方SDK
 - **Chalk** - 终端颜色样式库
-- **Ora** - 终端加载动画
 - **Figlet** - ASCII艺术字生成
 - **Readline** - 终端输入处理
 - **Dotenv** - 环境变量管理
@@ -130,7 +113,7 @@ agent-demo/
 本项目采用面向对象设计，主要包含以下核心组件：
 
 - **ChatAgent**: 负责对话逻辑处理和响应生成
-- **LLMService**: LLM服务抽象层，支持多种AI提供商
+- **LLMService**: LLM服务抽象层，支持Gemini AI
 - **ConfigManager**: 配置管理，处理环境变量和API密钥
 - **TerminalUI**: 处理终端界面交互和用户输入
 - **Types**: 定义项目中使用的数据类型
@@ -146,19 +129,16 @@ agent-demo/
 
 ### Google Gemini（推荐）
 - ✅ **免费额度充足**：每月免费API调用次数很多
-- ✅ **性能优秀**：与GPT-3.5相当的性能
+- ✅ **性能优秀**：先进的多模态AI能力
 - ✅ **响应快速**：延迟较低
-
-### 其他提供商
-- OpenAI：有免费试用，后续按使用量付费
-- Claude：有免费试用，后续按使用量付费
+- ✅ **完全免费**：对于大多数使用场景都是免费的
 
 ## 注意事项
 
-1. **API费用**：Gemini提供慷慨免费额度，其他模型可能产生费用
+1. **API费用**：Gemini提供慷慨免费额度，适合个人和小型项目使用
 2. **网络连接**：需要稳定的网络连接来访问AI服务
-3. **隐私保护**：对话内容会发送到相应的AI服务提供商
-4. **API限制**：注意各提供商的API调用频率限制
+3. **隐私保护**：对话内容会发送到Google AI服务
+4. **API限制**：注意Google API的调用频率限制
 
 ## 扩展建议
 

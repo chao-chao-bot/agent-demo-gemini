@@ -21,7 +21,7 @@ export interface ConversationContext {
   startTime: Date;
 }
 
-export type LLMProvider = 'openai' | 'claude' | 'gemini' | 'mock';
+export type LLMProvider = 'gemini' | 'mock';
 
 export interface LLMConfig {
   provider: LLMProvider;

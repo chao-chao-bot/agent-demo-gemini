@@ -62,17 +62,17 @@ export class ChatAgent {
 
     try {
       // 检查是否是特殊命令
-      const specialResponse = this.handleSpecialCommands(userInput);
-      if (specialResponse) {
-        // 添加特殊命令回复到上下文
-        const assistantMessage: ChatMessage = {
-          role: 'assistant',
-          content: specialResponse,
-          timestamp: new Date()
-        };
-        this.context.messages.push(assistantMessage);
-        return specialResponse;
-      }
+      // const specialResponse = this.handleSpecialCommands(userInput);
+      // if (specialResponse) {
+      //   // 添加特殊命令回复到上下文
+      //   const assistantMessage: ChatMessage = {
+      //     role: 'assistant',
+      //     content: specialResponse,
+      //     timestamp: new Date()
+      //   };
+      //   this.context.messages.push(assistantMessage);
+      //   return specialResponse;
+      // }
 
       // 使用LLM生成回复
       const response = await this.generateLLMResponse();
