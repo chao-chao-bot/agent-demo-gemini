@@ -114,4 +114,9 @@ export class RAGAgent {
     this.vectorStore.clear();
     console.log('知识库已清空');
   }
+
+  // 获取最后的查询向量信息
+  getLastQueryVector(): any {
+    return this.vectorStore.getLastQueryVector();
+  }
 } 

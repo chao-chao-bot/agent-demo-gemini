@@ -10,6 +10,12 @@ interface VectorDocument {
   embedding: number[];
 }
 
+interface QueryVector {
+  query: string;
+  embedding: number[];
+  timestamp: string;
+}
+
 export class SimpleVectorStore {
   private documents: VectorDocument[] = [];
   private embeddings: GoogleGenerativeAIEmbeddings;
@@ -30,6 +36,22 @@ export class SimpleVectorStore {
     return dotProduct / (magnitudeA * magnitudeB);
   }
 
+  // 保存查询向量到文件（覆盖）
+  private saveQueryVector(query: string, embedding: number[]): void {
+    const queryVector: QueryVector = {
+      query,
+      embedding,
+      timestamp: new Date().toISOString(),
+    };
+    
+    try {
+      writeFileSync(config.queryVectorPath, JSON.stringify(queryVector, null, 2));
+      console.log(`查询向量已保存到 ${config.queryVectorPath}`);
+    } catch (error) {
+      console.error('保存查询向量失败:', error);
+    }
+  }
+
   // 添加文档
   async addDocuments(documents: Document[]): Promise<void> {
     for (const doc of documents) {
@@ -48,6 +70,9 @@ export class SimpleVectorStore {
   // 相似性搜索
   async similaritySearch(query: string, k: number = 4): Promise<Document[]> {
     const queryEmbedding = await this.embeddings.embedQuery(query);
+    
+    // 每次都将查询向量保存到文件中（覆盖之前的）
+    this.saveQueryVector(query, queryEmbedding);
     
     const similarities = this.documents.map(doc => ({
       document: doc,
@@ -91,5 +116,19 @@ export class SimpleVectorStore {
   clear(): void {
     this.documents = [];
     this.saveToFile();
+  }
+
+  // 获取最后的查询向量
+  getLastQueryVector(): QueryVector | null {
+    if (existsSync(config.queryVectorPath)) {
+      try {
+        const data = readFileSync(config.queryVectorPath, 'utf-8');
+        return JSON.parse(data);
+      } catch (error) {
+        console.error('读取查询向量失败:', error);
+        return null;
+      }
+    }
+    return null;
   }
 } 

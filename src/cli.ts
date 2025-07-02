@@ -28,6 +28,7 @@ export class CLI {
     console.log(chalk.green('  /load <文件路径>     - 加载文档到知识库'));
     console.log(chalk.green('  /add <文本内容>      - 添加文本到知识库'));
     console.log(chalk.green('  /status             - 查看知识库状态'));
+    console.log(chalk.green('  /query              - 查看最后的查询向量'));
     console.log(chalk.green('  /clear              - 清空知识库'));
     console.log(chalk.green('  /help               - 显示帮助信息'));
     console.log(chalk.green('  /quit               - 退出程序'));
@@ -52,6 +53,11 @@ export class CLI {
 
     if (trimmed === '/status') {
       this.showStatus();
+      return true;
+    }
+
+    if (trimmed === '/query') {
+      this.showLastQuery();
       return true;
     }
 
@@ -104,6 +110,21 @@ export class CLI {
     const status = this.agent.getKnowledgeBaseStatus();
     console.log(chalk.cyan('\n📊 知识库状态:'));
     console.log(chalk.white(`  文档片段数量: ${status.documentCount}`));
+    console.log();
+  }
+
+  // 显示最后的查询向量
+  private showLastQuery(): void {
+    const lastQuery = this.agent.getLastQueryVector();
+    if (lastQuery) {
+      console.log(chalk.cyan('\n🔍 最后的查询向量:'));
+      console.log(chalk.white(`  查询内容: ${lastQuery.query}`));
+      console.log(chalk.white(`  时间戳: ${lastQuery.timestamp}`));
+      console.log(chalk.white(`  向量维度: ${lastQuery.embedding.length}`));
+      console.log(chalk.gray(`  向量前5个值: [${lastQuery.embedding.slice(0, 5).map((v: number) => v.toFixed(4)).join(', ')}...]`));
+    } else {
+      console.log(chalk.yellow('\n⚠️  暂无查询记录'));
+    }
     console.log();
   }
 
