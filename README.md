@@ -1,6 +1,24 @@
 # 🤖 智能RAG增强Agent系统
 
-一个基于**LangChain.js + Chroma**的智能终端对话助手，集成RAG(检索增强生成)知识库，支持Google Gemini大语言模型。通过向量数据库实现智能文档检索，提供更准确、专业的回答。
+一个基于**LangChain.js + ChromaDB**的专业级智能终端对话助手，集成RAG(检索增强生成)知识库，支持Google Gemini大语言模型。通过向量数据库实现智能文档检索，提供更准确、专业的回答。
+
+## 🎉 LangChain.js 升级版本
+
+**项目已升级支持两个版本：**
+
+| 版本 | 启动命令 | 特点 | 适用场景 |
+|------|---------|------|----------|
+| **🦜 LangChain版** | `node dist/index-langchain.js` | 专业级RAG架构，真正的向量数据库 | 生产环境，企业应用 |
+| **📚 简化版** | `node dist/index.js` | 轻量级实现，快速开始 | 学习测试，快速原型 |
+
+### LangChain版本优势
+- ✅ **真正的向量数据库**: ChromaDB持久化存储
+- ✅ **标准化架构**: LangChain.js专业框架
+- ✅ **智能文本处理**: RecursiveCharacterTextSplitter
+- ✅ **链式工作流**: RunnableSequence可组合管道
+- ✅ **企业级可扩展**: 支持更多LangChain生态系统
+
+📖 **详细升级指南**: 请查看 [`LANGCHAIN_UPGRADE_GUIDE.md`](./LANGCHAIN_UPGRADE_GUIDE.md)
 
 ## ✨ 功能特性
 

@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import { LLMConfig, LLMProvider } from '../types/index';
+import { LLMConfig, LLMProvider, AgentConfig } from '../types/index';
 
 // 加载环境变量
 dotenv.config();
@@ -60,6 +60,24 @@ export class ConfigManager {
       default:
         return false;
     }
+  }
+
+  public static getAgentConfig(): AgentConfig {
+    return {
+      name: process.env.AGENT_NAME || 'LangChain AI Assistant',
+      version: '2.0.0',
+      personality: '基于LangChain.js和ChromaDB的智能对话Agent，能够进行RAG增强的知识问答',
+      capabilities: [
+        'natural_language_chat',
+        'rag_knowledge_search', 
+        'document_management',
+        'context_memory'
+      ],
+      llmProvider: this.getDefaultProvider(),
+      model: process.env.GEMINI_MODEL || 'gemini-1.5-flash-latest',
+      maxTokens: parseInt(process.env.MAX_TOKENS || '2000'),
+      temperature: parseFloat(process.env.TEMPERATURE || '0.7')
+    };
   }
 
   public static getConfigHelp(): string {
